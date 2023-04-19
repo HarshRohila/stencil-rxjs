@@ -12,6 +12,7 @@ export class TodoApp {
   @State() inputText: string
   @State() isLoading: boolean
   @State() addBtnDisabled: boolean
+  @State() removingTodoId: string
 
   disconnected$ = new Subject<void>()
 
@@ -25,6 +26,7 @@ export class TodoApp {
       this.todos = state.todos
       this.inputText = state.inputText
       this.isLoading = state.isLoading
+      this.removingTodoId = state.removingTodoId
     })
 
     computedStates.isAddBtnDisabled$.pipe(takeUntil(this.disconnected$)).subscribe(disabled => {
@@ -61,7 +63,7 @@ export class TodoApp {
       <Host>
         <form onSubmit={this.handleAddTodo}>
           <input type="text" placeholder="New Todo" onInput={this.handleInputTextChange} value={this.inputText} />
-          <button disabled={this.addBtnDisabled}>Add Todo</button>
+          <button disabled={this.addBtnDisabled}>Add Todo ➕</button>
         </form>
 
         {this.isLoading ? (
@@ -71,8 +73,8 @@ export class TodoApp {
             {this.todos.map(t => (
               <li>
                 <h3>{t.text}</h3>
-                <button class="delete-btn" onClick={this.createDeleteTodoHandler(t)}>
-                  X
+                <button disabled={this.removingTodoId === t.id} class="delete-btn" onClick={this.createDeleteTodoHandler(t)}>
+                  ❌
                 </button>
               </li>
             ))}

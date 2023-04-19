@@ -15,8 +15,15 @@ li {
   padding: 0 10px;
   max-width: 500px;
 }
+
+li ~ li {
+  border-top: 0;
+}
+
 .delete-btn {
   margin-left: 20px;
+  background-color: transparent;
+  border: 0;
 }
 
 button {

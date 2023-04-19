@@ -7,6 +7,7 @@ interface State {
   inputText: string
   isLoading: boolean
   addTodoLoading: boolean
+  removingTodoId: Todo['id']
 }
 
 export interface Todo {
@@ -19,6 +20,7 @@ const initialState: State = {
   inputText: '',
   isLoading: false,
   addTodoLoading: false,
+  removingTodoId: '',
 }
 
 const createTodo = function (text: string) {
@@ -38,7 +40,9 @@ export const events = {
 
     deleteTodo$
       .pipe(
+        tap(t => setState({ removingTodoId: t.id })),
         switchMap(todo => store.removeRecord('todo', todo.id).pipe(map(() => todo))),
+        tap(() => setState({ removingTodoId: '' })),
         takeUntil(disconnected$),
       )
       .subscribe(todo => {

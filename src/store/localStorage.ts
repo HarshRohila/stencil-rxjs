@@ -16,6 +16,7 @@ export class LocalStorageStore implements IStore {
       }),
       tap(records => localStorage.setItem(modelName, JSON.stringify(records))),
       map(() => undefined),
+      delay(DELAY_TIME),
     )
   }
   push<T>(modelName: string, data: T | T[]): Observable<void> {

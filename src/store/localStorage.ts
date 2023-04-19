@@ -1,4 +1,4 @@
-import { Observable, of, throwError } from 'rxjs'
+import { Observable, of, throwError, delay, tap, map } from 'rxjs'
 import { IStore } from '.'
 
 const getOldData = <T>(modelName: string) => {
@@ -6,7 +6,18 @@ const getOldData = <T>(modelName: string) => {
   return oldData ? (JSON.parse(oldData) as T[]) : []
 }
 
+const DELAY_TIME = 300
+
 export class LocalStorageStore implements IStore {
+  removeRecord(modelName: string, id: string | number): Observable<void> {
+    return of(getOldData('todo')).pipe(
+      map(records => {
+        return records.filter(r => r['id'] !== id)
+      }),
+      tap(records => localStorage.setItem(modelName, JSON.stringify(records))),
+      map(() => undefined),
+    )
+  }
   push<T>(modelName: string, data: T | T[]): Observable<void> {
     const getNewData = () => (Array.isArray(data) ? data : [data])
 
@@ -16,7 +27,7 @@ export class LocalStorageStore implements IStore {
     const mergedData = JSON.stringify([...oldData, ...newData])
 
     localStorage.setItem(modelName, mergedData)
-    return of(undefined)
+    return of(undefined).pipe(delay(DELAY_TIME))
   }
 
   findRecord<T>(modelName: string, id: string | number): Observable<T> {
@@ -30,6 +41,6 @@ export class LocalStorageStore implements IStore {
   }
 
   findAll<T>(modelName: string): Observable<T[]> {
-    return of(getOldData<T>(modelName))
+    return of(getOldData<T>(modelName)).pipe(delay(DELAY_TIME))
   }
 }

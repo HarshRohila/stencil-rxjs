@@ -7,6 +7,8 @@ export interface IStore {
   findRecord<T>(modelName: string, id: string | number): Observable<T>
 
   findAll<T>(modelName: string): Observable<T[]>
+
+  removeRecord(modelName: string, id: string | number): Observable<void>
 }
 
 export const store = new LocalStorageStore() as IStore

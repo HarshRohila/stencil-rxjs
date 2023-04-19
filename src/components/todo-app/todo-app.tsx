@@ -8,6 +8,7 @@ import { Subject, takeUntil } from 'rxjs'
 })
 export class TodoApp {
   @State() todos: Todo[]
+  @State() inputText: string
 
   disconnected$ = new Subject<void>()
 
@@ -17,6 +18,7 @@ export class TodoApp {
   componentWillLoad() {
     state$.pipe(takeUntil(this.disconnected$)).subscribe(state => {
       this.todos = state.todos
+      this.inputText = state.inputText
     })
   }
 
@@ -38,7 +40,7 @@ export class TodoApp {
     return (
       <Host>
         <form onSubmit={this.handleAddTodo}>
-          <input type="text" placeholder="New Todo" onInput={this.handleInputTextChange} />
+          <input type="text" placeholder="New Todo" onInput={this.handleInputTextChange} value={this.inputText} />
           <button>Add Todo</button>
         </form>
 

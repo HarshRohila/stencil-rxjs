@@ -46,11 +46,11 @@ export const events = {
     addTodo$
       .pipe(
         map(() => state$.value.inputText),
-        map(text => createTodo(text)),
+        map(createTodo),
         takeUntil(disconnected$),
       )
       .subscribe(newTodo => {
-        setState({ todos: [...state$.value.todos, newTodo] })
+        setState({ todos: [...state$.value.todos, newTodo], inputText: '' })
       })
 
     return {

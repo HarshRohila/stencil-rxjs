@@ -1,0 +1,30 @@
+input {
+  font-size: 1em;
+  padding: 6px 10px;
+  flex: 1;
+}
+button {
+  font-size: 1em;
+  padding: 6px 10px;
+}
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid;
+  padding: 0 10px;
+  max-width: 500px;
+}
+.delete-btn {
+  margin-left: 20px;
+}
+
+button {
+  cursor: pointer;
+}
+ul {
+  padding: 0;
+}
+form {
+  display: flex;
+}

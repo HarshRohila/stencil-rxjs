@@ -1,16 +1,17 @@
 import { Component, Host, h, State } from '@stencil/core'
-import { events, state$, Todo } from './facade'
+import { computedStates, events, state$, Todo } from './facade'
 import { Subject, takeUntil } from 'rxjs'
 
 @Component({
   tag: 'todo-app',
+  styleUrl: 'todo-app.scss',
   shadow: true,
 })
 export class TodoApp {
   @State() todos: Todo[]
   @State() inputText: string
   @State() isLoading: boolean
-  @State() isAddTodoLoading: boolean
+  @State() addBtnDisabled: boolean
 
   disconnected$ = new Subject<void>()
 
@@ -24,7 +25,10 @@ export class TodoApp {
       this.todos = state.todos
       this.inputText = state.inputText
       this.isLoading = state.isLoading
-      this.isAddTodoLoading = state.addTodoLoading
+    })
+
+    computedStates.isAddBtnDisabled$.pipe(takeUntil(this.disconnected$)).subscribe(disabled => {
+      this.addBtnDisabled = disabled
     })
 
     this.componentLoadedEvent.emit()
@@ -57,7 +61,7 @@ export class TodoApp {
       <Host>
         <form onSubmit={this.handleAddTodo}>
           <input type="text" placeholder="New Todo" onInput={this.handleInputTextChange} value={this.inputText} />
-          <button disabled={this.isAddTodoLoading}>{this.isAddTodoLoading ? '...' : 'Add Todo'}</button>
+          <button disabled={this.addBtnDisabled}>Add Todo</button>
         </form>
 
         {this.isLoading ? (
@@ -67,7 +71,9 @@ export class TodoApp {
             {this.todos.map(t => (
               <li>
                 <h3>{t.text}</h3>
-                <button onClick={this.createDeleteTodoHandler(t)}>X</button>
+                <button class="delete-btn" onClick={this.createDeleteTodoHandler(t)}>
+                  X
+                </button>
               </li>
             ))}
           </ul>

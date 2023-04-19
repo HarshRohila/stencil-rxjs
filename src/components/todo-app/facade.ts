@@ -110,3 +110,7 @@ export const events = {
 }
 
 export const state$ = new BehaviorSubject<State>(initialState)
+
+export const computedStates = {
+  isAddBtnDisabled$: state$.pipe(map(state => state.inputText.length === 0 || state.addTodoLoading)),
+}

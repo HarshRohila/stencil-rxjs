@@ -1,4 +1,5 @@
-import { BehaviorSubject, Subject, map, takeUntil } from 'rxjs'
+import { BehaviorSubject, Subject, map, takeUntil, switchMap } from 'rxjs'
+import { store } from '../../store'
 
 interface State {
   todos: Todo[]
@@ -47,6 +48,7 @@ export const events = {
       .pipe(
         map(() => state$.value.inputText),
         map(createTodo),
+        switchMap(newTodo => store.push('todo', newTodo).pipe(map(() => newTodo))),
         takeUntil(disconnected$),
       )
       .subscribe(newTodo => {
